@@ -60,13 +60,15 @@ $ npm run test:cov
 
 ## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Este proyecto es una prueba de una api para la gestión de usuarios. Para poner a correr la api:
+[1] Debes tener instalado node.js y nest.js
+[2] En tu consola CMD debes dirigirte a la ubicación de donde se encuentra la carpeta backen dentro del proyecto y ejecuta 'npm run start:dev'
+
+Listo, ya puedes usar la api, para consumir la api debes ver las configuraciónes del frontend
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Author - [Andres Naranjo](https://www.linkedin.com/in/andres-mauricio-naranjo-valencia/)
 
 ## License
 
