@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Space, Modal, Form, Input, Button, message } from 'antd';
 import axios from 'axios';
+import UserList from './UserList copy';
 
-const UserList = () => {
+const MyTable = () => {
   const [users, setUsers] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -85,7 +86,7 @@ const UserList = () => {
       key: 'edit',
       render: (text, record) => (
         <Space size="middle">
-          <a onClick={() => editUser(record)}>Editar</a>
+          <Button type="link" onClick={() => editUser(record)}>Editar</Button>
         </Space>
       ),
     },
@@ -94,7 +95,7 @@ const UserList = () => {
       key: 'delete',
       render: (text, record) => (
         <Space size="middle">
-          <a onClick={() => handleDeleteUser(record.id)}>Borrar</a>
+          <Button type="link" onClick={() => handleDeleteUser(record.id)}>Borrar</Button>
         </Space>
       ),
     },
@@ -151,4 +152,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default UserList;
