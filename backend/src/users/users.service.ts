@@ -26,8 +26,24 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<Users> {
-    await this.userRepository.update(id, updateUserDto);
-    return this.findOne(id);
+    const existingUser = await this.userRepository.findOne({where: {id}}); // Buscar el usuario existente
+    if (!existingUser) {
+      throw new Error('User not found'); // Manejar el caso en el que el usuario no existe
+    }
+
+    // Actualizar solo los campos proporcionados en el DTO de actualización
+    if (updateUserDto.name) {
+      existingUser.name = updateUserDto.name;
+    }
+    if (updateUserDto.email) {
+      existingUser.email = updateUserDto.email;
+    }
+    if (updateUserDto.age) {
+      existingUser.age = updateUserDto.age;
+    }
+
+    await this.userRepository.save(existingUser); // Guardar los cambios en la base de datos
+    return existingUser;
   }
 
   async remove(id: number): Promise<void> {

@@ -216,7 +216,7 @@ const UserList = () => {
         />
         <Modal
           title="Add User"
-          visible={isModalVisible}
+          open={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
         >
