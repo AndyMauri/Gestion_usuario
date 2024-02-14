@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Space, Modal, Form, Input, Button, message } from 'antd';
 import axios from 'axios';
 
-const MyTable = () => {
+const UserList = () => {
   const [users, setUsers] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -151,4 +151,4 @@ const MyTable = () => {
   );
 };
 
-export default MyTable;
+export default UserList;
