@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Input, Popconfirm, Form, Typography, message, Button, Card, Modal } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Table, Space, Modal, Form, Input, Button, message } from 'antd';
 import axios from 'axios';
 
-const { Text } = Typography;
-
-const UserList = () => {
+const MyTable = () => {
   const [users, setUsers] = useState([]);
-  const [editingKey, setEditingKey] = useState('');
-  const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isNewUserRowVisible, setIsNewUserRowVisible] = useState(false);
+  const [form] = Form.useForm();
   const [editingUser, setEditingUser] = useState(null);
 
   useEffect(() => {
@@ -29,212 +24,131 @@ const UserList = () => {
 
   const showModal = () => {
     setIsModalVisible(true);
-    setIsNewUserRowVisible(true); // Mostrar la fila para el nuevo usuario
+    setEditingUser(null);
   };
 
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      await axios.post('http://localhost:3000/users', values);
-      message.success('User added successfully');
+
+      if (editingUser) {
+        await axios.put(`http://localhost:3000/users/${editingUser.id}`, values);
+        message.success('User updated successfully');
+      } else {
+        await axios.post('http://localhost:3000/users', values);
+        message.success('User added successfully');
+      }
+
       setIsModalVisible(false);
-      setIsNewUserRowVisible(false); // Ocultar la fila para el nuevo usuario después de agregarlo
-      fetchData(); // Refrescar la lista después de crear el usuario
+      setEditingUser(null);
+      fetchData();
     } catch (error) {
-      console.error('Error adding user:', error);
-      message.error('Error adding user');
+      console.error('Error adding/updating user:', error);
+      message.error('Error adding/updating user');
     }
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    setIsNewUserRowVisible(false); // Ocultar la fila para el nuevo usuario si se cancela
-  };
-
-  const isEditing = (record) => record.id === editingKey;
-
-  const edit = (record) => {
-    setEditingKey(record.id);
-    setEditingUser(record);
-    form.setFieldsValue(record);
-  };
-
-  const cancel = () => {
-    setEditingKey('');
     setEditingUser(null);
   };
 
-  const save = async (id) => {
-    try {
-      const row = await form.validateFields();
-      if (id === 'new') {
-        await axios.post('http://localhost:3000/users', row);
-        message.success('User added successfully');
-        fetchData(); // Actualizar la lista después de crear el usuario
-        setIsNewUserRowVisible(false); // Ocultar la fila para el nuevo usuario después de agregarlo
-      } else {
-        await axios.put(`http://localhost:3000/users/${id}`, row);
-        message.success('User updated successfully');
-      }
-      setEditingKey('');
-      setEditingUser(null);
-    } catch (error) {
-      console.error('Error updating user:', error);
-      message.error('Error updating user');
-    }
-  };
-
-  const handleDeleteUser = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/users/${id}`);
-      message.success('User deleted successfully');
-      fetchData(); // Actualizar la lista después de eliminar el usuario
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      message.error('Error deleting user');
-    }
+  const editUser = (record) => {
+    setEditingUser(record);
+    form.setFieldsValue(record);
+    setIsModalVisible(true);
   };
 
   const columns = [
     {
       title: 'ID',
       dataIndex: 'id',
+      key: 'id',
     },
     {
       title: 'Name',
       dataIndex: 'name',
-      editable: true,
-      render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <Form.Item name="name" style={{ margin: 0 }}>
-            <Input defaultValue={editingUser ? editingUser.name : ''} /> {/* Usar el valor del usuario en edición */}
-          </Form.Item>
-        ) : (
-          <Text>{record.name}</Text>
-        );
-      },
+      key: 'name',
     },
     {
       title: 'Email',
       dataIndex: 'email',
-      editable: true,
-      render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <Form.Item name="email" style={{ margin: 0 }}>
-            <Input defaultValue={editingUser ? editingUser.email : ''} /> {/* Usar el valor del usuario en edición */}
-          </Form.Item>
-        ) : (
-          <Text>{record.email}</Text>
-        );
-      },
+      key: 'email',
     },
     {
       title: 'Age',
       dataIndex: 'age',
-      editable: true,
-      render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <Form.Item name="age" style={{ margin: 0 }}>
-            <Input defaultValue={editingUser ? editingUser.age : ''} /> {/* Usar el valor del usuario en edición */}
-          </Form.Item>
-        ) : (
-          <Text>{record.age}</Text>
-        );
-      },
+      key: 'age',
     },
     {
-      title: 'Action',
-      dataIndex: 'action',
-      render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Button type="primary" onClick={() => save(record.id)} style={{ marginRight: 8 }}>
-              Save
-            </Button>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <Button>Cancel</Button>
-            </Popconfirm>
-          </span>
-        ) : (
-          <Button onClick={() => edit(record)}>Edit</Button>
-        );
-      },
+      title: 'Editar',
+      key: 'edit',
+      render: (text, record) => (
+        <Space size="middle">
+          <a onClick={() => editUser(record)}>Editar</a>
+        </Space>
+      ),
     },
     {
-      title: 'Delete',
-      dataIndex: 'delete',
-      render: (_, record) => (
-        <Popconfirm
-          title="Are you sure to delete this user?"
-          onConfirm={() => handleDeleteUser(record.id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button type="danger" icon={<DeleteOutlined />} />
-        </Popconfirm>
+      title: 'Borrar',
+      key: 'delete',
+      render: (text, record) => (
+        <Space size="middle">
+          <a onClick={() => handleDeleteUser(record.id)}>Borrar</a>
+        </Space>
       ),
     },
   ];
 
+  const handleDeleteUser = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/users/${id}`);
+      message.success('User deleted successfully');
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      message.error('Error deleting user');
+    }
+  };
+
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundImage: "url('https://via.placeholder.com/800')" }}>
-      <Card style={{ width: '80%', opacity: 0.9 }}>
-        {isNewUserRowVisible && ( // Mostrar la fila para el nuevo usuario solo cuando es visible
-          <Form form={form} onFinish={handleOk} layout="inline" style={{ marginBottom: 16 }}>
-            <Form.Item name="name" style={{ margin: 0 }}>
-              <Input placeholder="Name" />
-            </Form.Item>
-            <Form.Item name="email" style={{ margin: '0 8px' }}>
-              <Input placeholder="Email" />
-            </Form.Item>
-            <Form.Item name="age" style={{ margin: 0 }}>
-              <Input placeholder="Age" />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">Save</Button>
-            </Form.Item>
-          </Form>
-        )}
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<PlusOutlined />}
-          size="large"
-          style={{ marginBottom: '20px' }}
-          onClick={showModal}
-        />
-        <Table
-          bordered
-          dataSource={users}
-          columns={columns}
-          rowKey="id"
-          pagination={{ pageSize: 10 }}
-        />
-        <Modal
-          title="Add User"
-          open={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          <Form form={form} layout="vertical">
-            <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please input the name' }]}>
-              <Input />
-            </Form.Item>
-            <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Please input the email' }]}>
-              <Input />
-            </Form.Item>
-            <Form.Item name="age" label="Age" rules={[{ required: true, message: 'Please input the age' }]}>
-              <Input />
-            </Form.Item>
-          </Form>
-        </Modal>
-      </Card>
+    <div>
+      <Button type="primary" onClick={showModal}>
+        Add User
+      </Button>
+      <Table dataSource={users} columns={columns} />
+      <Modal
+        title={editingUser ? 'Edit User' : 'Add User'}
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form form={form} name="addEditUserForm">
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: 'Please enter the name' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: 'Please enter the email' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="age"
+            label="Age"
+            rules={[{ required: true, message: 'Please enter the age' }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
 
-export default UserList;
+export default MyTable;
