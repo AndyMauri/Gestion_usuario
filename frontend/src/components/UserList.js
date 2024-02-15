@@ -3,7 +3,7 @@ import { Table, Space, Modal, Form, Input, Button, message, Card } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
-const MyTable = () => {
+const UserList = () => {
   const [users, setUsers] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -119,7 +119,7 @@ const MyTable = () => {
         <Table dataSource={users} columns={columns} />
         <Modal
           title={editingUser ? 'Edit User' : 'Add User'}
-          visible={isModalVisible}
+          open={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
         >
@@ -152,4 +152,4 @@ const MyTable = () => {
   );
 };
 
-export default MyTable;
+export default UserList;
