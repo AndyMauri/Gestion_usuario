@@ -13,10 +13,12 @@ Listo, ya puedes usar la api.
 
 Para consumir la api debes ver las configuraciónes del frontend que se encuentra en la carpeta que lleva su nombre. Pero aquí te dejo unos comandos basicos para poder usar el fronted:
 
-En el directorio del proyecto frontend, puedes ejecutar:
+En el CMD puedes buscar el directorio del proyecto frontend 'gestion_usuario/frontend', estando ahí puedes ejecutar:
 
 npm start Ejecuta la aplicación en modo de desarrollo.
 Abre http://localhost:3000 para verla en tu navegador.
+
+Nota: si te falla el proyecto del frontend cuando ejecutas npm start es porque le faltan librerias, para corregir el error debes ejecutar en el CMD estando en el diretorio frontend 'npm install', luego vuleve a ejecutar 'npm start'.
 
 La página se recargará cuando realices cambios.
 También puedes ver cualquier error de lint en la consola.
