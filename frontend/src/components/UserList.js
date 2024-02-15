@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Space, Modal, Form, Input, Button, message } from 'antd';
+import { Table, Space, Modal, Form, Input, Button, message, Card } from 'antd';
+import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import UserList from './UserList copy';
 
 const MyTable = () => {
   const [users, setUsers] = useState([]);
@@ -86,7 +86,7 @@ const MyTable = () => {
       key: 'edit',
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link" onClick={() => editUser(record)}>Editar</Button>
+          <Button type="link" shape="circle" icon={<EditOutlined />} onClick={() => editUser(record)} />
         </Space>
       ),
     },
@@ -95,7 +95,7 @@ const MyTable = () => {
       key: 'delete',
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link" onClick={() => handleDeleteUser(record.id)}>Borrar</Button>
+          <Button type="danger" shape="circle" icon={<DeleteOutlined />} onClick={() => handleDeleteUser(record.id)} />
         </Space>
       ),
     },
@@ -113,43 +113,43 @@ const MyTable = () => {
   };
 
   return (
-    <div>
-      <Button type="primary" onClick={showModal}>
-        Add User
-      </Button>
-      <Table dataSource={users} columns={columns} />
-      <Modal
-        title={editingUser ? 'Edit User' : 'Add User'}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Form form={form} name="addEditUserForm">
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: 'Please enter the name' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[{ required: true, message: 'Please enter the email' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="age"
-            label="Age"
-            rules={[{ required: true, message: 'Please enter the age' }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-        </Form>
-      </Modal>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundImage: "url('https://via.placeholder.com/800')" }}>
+      <Card style={{ width: '80%', opacity: 0.9 }}>
+        <Button type="primary" shape="circle" icon={<PlusOutlined />} style={{ marginBottom: '20px' }} onClick={showModal} />
+        <Table dataSource={users} columns={columns} />
+        <Modal
+          title={editingUser ? 'Edit User' : 'Add User'}
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <Form form={form} name="addEditUserForm">
+            <Form.Item
+              name="name"
+              label="Name"
+              rules={[{ required: true, message: 'Please enter the name' }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[{ required: true, message: 'Please enter the email' }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="age"
+              label="Age"
+              rules={[{ required: true, message: 'Please enter the age' }]}
+            >
+              <Input type="number" />
+            </Form.Item>
+          </Form>
+        </Modal>
+      </Card>
     </div>
   );
 };
 
-export default UserList;
+export default MyTable;
